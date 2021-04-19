@@ -1,0 +1,6 @@
+__pycache__/
+.vscode/
+flask_session/
+venv/
+commands.txt
+README.md
