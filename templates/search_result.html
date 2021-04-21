@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block customCSS %} 
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}">
+{% endblock %}
+
+{% block body %} 
+
+<div class="container mt-3 search">
+    <form class="form-inline search" action="/search" method="GET">
+        <input value="{{ query }}" type="search" name="q" class="form-control search mr-2 wide">
+        <button type="submit" class="btn btn-primary btn-custom search-btn mb-2">Search</button>
+    </form>
+
+    {% if isEmpty == False %}
+    <h4 class="header search">Search result for {{ query }}</h4>
+    {% endif %}
+
+    <div class="row result-container">
+            {% if isEmpty %}
+                <div class="col mt-5">
+                    <div class="sad-icon">
+                        <i class="fa fa-frown-o" aria-hidden="true"></i>
+                    </div>
+                    <h2>No match</h2> 
+                    <h3 class="no-result">Please try searching another keyword.</h3>
+                </div>
+            {% else %}
+                {% for book in result %}
+                <div class="col-6 col-md-4 col-xl-3">
+                    <a href="{{ url_for('book', isbn=book.isbn) }}">
+                        <div class="card book-link">
+                            <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">By {{ book.author }}</h6>
+                            <a href="{{ url_for('book', isbn=book.isbn) }}" class="card-link stretched-link">View Details</a>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            {% endif %}
+    </div>
+
+{% endblock %}

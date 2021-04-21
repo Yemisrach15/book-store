@@ -2,10 +2,39 @@
 
 {% block title %} Dashboard {% endblock %}
 
+{% block customCSS %} 
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}">
+{% endblock %}
+
 {% block body %} 
 
-<h1>Dashboard</h1>
-<h2>Welcome {{ user }}</h2>
+<div class="container dashboard">
+    <div class="wrapper">
+        <h2 class="header dashboard">Welcome {{ user }}</h2>
+        <div class="icon">
+            <i class="fa fa-search"></i>
+        </div>
+        <div class="description">
+            Search by ISBN, Author or Title
+        </div>
 
-<a href="{{ url_for('logout')}}">Logout</a>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="/search" method="GET">
+            <div class="form-group">
+                <input type="search" name="q" placeholder="Search" class="form-control search" autofocus>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-primary btn-custom search-btn">
+            </div>
+        </form>        
+    </div>
+</div>
+
 {% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %} {{ result.title }} {% endblock %}
+
+{% block customCSS %} 
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}">
+{% endblock %}
+
+{% block body %} 
+
+<div class="container">
+    <div class="book-details">
+        <h1>Book Details</h1>
+        <h2 class="book-title">
+            <span class="text-muted">Title</span>
+            {{ result.title }}
+        </h2>
+        <h2 class="book-author">
+            <span class="text-muted">Author</span>
+            {{ result.author }}
+        </h2>
+        <h2 class="book-isbn">
+            <span class="text-muted">ISBN</span>
+            {{ result.isbn }}
+        </h2>
+        <h2 class="book-year">
+            <span class="text-muted">Publication Year</span>
+            {{ result.year }}
+        </h2>
+        
+        <a href="{{ url_for('dashboard') }}">
+            <button class="btn btn-primary btn-custom">Search Again</button>
+        </a>
+    </div>
+
+    <div class="book-details reviews">
+        <h2>Reviews</h2>
+    </div>
+</div>
+
+{% endblock %}

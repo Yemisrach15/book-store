@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Noto+Serif+JP:wght@300;400;500&display=swap');
+
 *{
     margin: 0;
     padding: 0;
@@ -6,6 +9,9 @@
 }
 body {
     background-color: #f1eeee;
+}
+nav {
+    box-shadow: 0 2px 15px #8a939c42;
 }
 .wrapper{
     width: 45%;
@@ -41,4 +47,93 @@ body {
     background-color: #daa13ee8;
     box-shadow: 0 0 8px #d8a3478a;
     border-color: transparent;
+}
+.icon{
+    font-size: 3em;
+    text-align: center;
+    margin: .4em 0 .4em 0;
+}
+.dashboard, .search{
+    text-align: center;
+}
+.search{
+    padding: .5em 0;
+}
+.search-btn{
+    margin-top: .5em;
+}
+.header.dashboard{
+    font-size: 2.5em;
+    margin-top: 1em;
+    margin-bottom: .5em;
+}
+.description{
+    font-size: .9em;
+    color: rgb(202, 211, 21);
+    margin-bottom: 1em;
+}
+.card-subtitle{
+    font-size: .9em;
+    font-family: 'Noto Serif JP', serif;
+}
+.card-subtitle::before{
+    content: "\2014\00A0";
+}
+.card-link{
+    color: rgb(202, 211, 21);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+}
+.card-link:hover{
+    color: rgb(141, 148, 17);
+}
+.header.search{
+    margin-top: 1em;
+    font-family: 'Quicksand', serif;
+}
+.search.wide{
+    width: 70%;
+}
+.no-result{
+    font-size: 1.2em;
+}
+.sad-icon > i{
+    font-size: 6em;
+    margin-bottom: .2em;
+}
+form.search{
+    justify-content: center;
+}
+.card.card.book-link{
+    transition: transform .07s ease-in-out;
+    /* max-width: 288px; */
+    margin-bottom: 1em;
+}
+.card.book-link:hover{
+    box-shadow: 0 0 10px #8a939c42;
+    transform: scale(1.02);
+}
+.container.search{
+    width: 70%;
+}
+.book-details{
+    margin: 1em auto;
+    padding: 2em 4em;
+    border-radius: 4px;
+    box-sizing: content-box;
+    background-color: #fff;
+    /* box-shadow: 0px 0px 15px #8a939c42; */
+}
+.book-details > h2 {
+    font-size: 1.2em;
+    font-family: 'Quicksand', serif;
+}
+.book-details h2 .text-muted{
+    margin-right: .5em;
+    font-size: .8em;
+    font-family: 'Quicksand', serif;
+    color: rgb(141, 148, 17)!important;
+}
+.book-details .btn-custom {
+    margin-top: 1em;
 }

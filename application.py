@@ -4,6 +4,7 @@ from flask import Flask, session, render_template, redirect, request, url_for, f
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.sql import text
 from models import *
 from forms import RegisterForm, LoginForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -107,6 +108,30 @@ def logout():
 @login_required
 def dashboard():
     return render_template("dashboard.html", user=current_user.username)
+
+@app.route("/search")
+def search():
+    query = request.args.get("q")
+    if query == None:
+        return redirect(url_for("dashboard"))
+
+    query.strip().replace("'", "")
+    # result = Book.query.filter_by(title=query).all()
+    statement = text("""select * from books where lower(title) like '%""" + query + """%' or lower(isbn) like '%""" + query + """%' or lower(author) like '%""" + query + """%'""")
+    result = db.session.execute(statement).fetchall()
+    isEmpty = False
+    if len(result) == 0:
+        isEmpty = True
+    return render_template("search_result.html", query=query, result=result, isEmpty=isEmpty)
+
+@app.route("/books/<string:isbn>")
+def book(isbn):
+    isbn = str(isbn)
+    statement = text("""select * from books where books.isbn = :isbn limit 1""")
+    result = db.session.execute(statement, {'isbn': isbn}).fetchone()
+
+    return render_template("book.html", result=result)
+    
 
 
 if __name__ == "__main__":
