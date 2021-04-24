@@ -5,7 +5,7 @@
     margin: 0;
     padding: 0;
     font-family: Georgia, 'Times New Roman', Times, serif;
-    color: rgb(34, 34, 34);
+    color: #323d46;
 }
 body {
     background-color: #f1eeee;
@@ -104,12 +104,12 @@ nav {
 form.search{
     justify-content: center;
 }
-.card.card.book-link{
+.card.card.book-card{
     transition: transform .07s ease-in-out;
     /* max-width: 288px; */
     margin-bottom: 1em;
 }
-.card.book-link:hover{
+.card.book-card:hover{
     box-shadow: 0 0 10px #8a939c42;
     transform: scale(1.02);
 }
@@ -124,16 +124,59 @@ form.search{
     background-color: #fff;
     /* box-shadow: 0px 0px 15px #8a939c42; */
 }
-.book-details > h2 {
-    font-size: 1.2em;
+.book-details > h3 {
+    font-size: 1.1em;
     font-family: 'Quicksand', serif;
 }
-.book-details h2 .text-muted{
+.book-details h3 .text-muted, .your-review p span.text-muted, .review p span.text-muted, .post-review label.text-muted{
     margin-right: .5em;
     font-size: .8em;
     font-family: 'Quicksand', serif;
     color: rgb(141, 148, 17)!important;
+    font-weight: 500;
 }
 .book-details .btn-custom {
     margin-top: 1em;
+}
+.reviews h2{
+    margin-bottom: .8em;
+}
+.review, .your-review{
+    padding: 1em 2em;
+    border-radius: 5px;
+    margin-bottom: 1em;
+}
+.review{
+    border-bottom: 1px solid #f1eeee;
+}
+.review *, .your-review *{
+    font-family: 'Quicksand', serif;
+    font-weight: 500;
+}
+.review .star-icon i, .your-review .star-icon i{
+    font-family: 'Fontawesome';
+}
+.your-review h3{
+    color: rgb(34, 34, 34);
+    font-size: 1em;
+    margin-bottom: 1em;
+}
+.your-review p{
+    line-height: 1.2;
+}
+.your-review, .post-review{
+    background-color: #8d94111a;
+}
+.post-review{
+    padding: 1em 2em;
+    border-radius: 5px;
+    margin-bottom: 1em;
+}
+.star-icon i{
+    color: #cad315;
+    font-size: .9em;
+}
+.no-review{
+    font-size: 1.2em;
+    text-align: center;
 }

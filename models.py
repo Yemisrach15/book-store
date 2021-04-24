@@ -9,6 +9,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
+    reviews = db.relationship('Review', backref='')
 
     def __init__(self, username, password):
         self.username = username
@@ -34,6 +35,13 @@ class Book(db.Model):
     def __repr__(self):
         return '<ISBN %r>' % self.isbn
 
+class Review(db.Model):
+    __tablename__ = "reviews"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    review = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 @login_manager.user_loader
 def load_user(id):

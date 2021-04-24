@@ -1,41 +1,86 @@
 {% extends "base.html" %}
 
-{% block title %} {{ result.title }} {% endblock %}
-
-{% block customCSS %} 
-<link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}">
-{% endblock %}
+{% block title %} {{ bookDetail.title }} {% endblock %}
 
 {% block body %} 
 
 <div class="container">
     <div class="book-details">
         <h1>Book Details</h1>
-        <h2 class="book-title">
+        <h3 class="book-title">
             <span class="text-muted">Title</span>
-            {{ result.title }}
-        </h2>
-        <h2 class="book-author">
+            {{ bookDetail.title }}
+        </h3>
+        <h3 class="book-author">
             <span class="text-muted">Author</span>
-            {{ result.author }}
-        </h2>
-        <h2 class="book-isbn">
+            {{ bookDetail.author }}
+        </h3>
+        <h3 class="book-isbn">
             <span class="text-muted">ISBN</span>
-            {{ result.isbn }}
-        </h2>
-        <h2 class="book-year">
+            {{ bookDetail.isbn }}
+        </h3>
+        <h3 class="book-year">
             <span class="text-muted">Publication Year</span>
-            {{ result.year }}
-        </h2>
-        
-        <a href="{{ url_for('dashboard') }}">
-            <button class="btn btn-primary btn-custom">Search Again</button>
-        </a>
+            {{ bookDetail.year }}
+        </h3>
+        <button class="btn btn-primary btn-custom back-btn">Back</button>
     </div>
 
     <div class="book-details reviews">
         <h2>Reviews</h2>
+        {% if userCanReview %}
+        <div class="post-review">
+            <form class="" action="{{ url_for('book', isbn=bookDetail.isbn) }}" method="POST">
+                <label class="text-muted" for="feedback">Your Review</label>
+                <input class="form-control mr-2 w-100" type="text" name="feedback" id="feedback">
+                <label for="rating" class="text-muted mt-3">Rate this book</label>
+                <select class="form-control mr-2 w-25" name="rating" id="rating">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-custom search-btn mb-3">Post review</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="your-review">
+            <h3>You</h3>
+            <p><span class="text-muted">Review</span> {{userReview.review}}</p>
+            <p><span class="text-muted">Rating</span> 
+                {% for i in range(0, userReview.rating) %}
+                <span class="star-icon"><i class="fa fa-star" aria-hidden="true"></i></span>
+                {% endfor %}
+            </p>
+        </div>
+        {% endif %}
+
+        <div>
+            {% if bookReviews|length %}
+                {% for review in bookReviews %}
+                <div class="review w-100">
+                    <p><span class="text-muted">User</span> {{ review.username }}</p>
+                    <p><span class="text-muted">Review</span> {{ review.review }}</p>
+                    <p><span class="text-muted">Rating</span> 
+                    {% for i in range(0, review.rating) %}
+                    <span class="star-icon"><i class="fa fa-star" aria-hidden="true"></i></span>
+                    {% endfor %}
+                    </p>
+                </div>
+                {% endfor %}
+            {% else %}
+                {% if userCanReview == true %}
+                <div class="review w-100">
+                    <h3 class="no-review">No reviews yet. Be the first one to give a comment.</h3>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+
     </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
 {% endblock %}

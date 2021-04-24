@@ -9,11 +9,11 @@ from models import *
 from forms import RegisterForm, LoginForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-# from wtform_fields import *
+
 
 app = Flask(__name__)
 
-# Apply static file changes without clearing cache
+# Apply static file changes without clearing cache [ONLY FOR DEVELOPMENT]
 @app.after_request
 def after_request(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -28,18 +28,16 @@ if not os.getenv("DATABASE_URL"):
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+
 app.config["SECRET_KEY"] = "secret key"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 Session(app)
 
 # Set up database
-# engine = create_engine(os.getenv("DATABASE_URL"))
-# Session = scoped_session(sessionmaker(bind=engine))
-# db = Session()
 db.init_app(app)
 
-
+# Set login view
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
@@ -58,8 +56,6 @@ def register():
         
         usr = User(name, generate_password_hash(pwd))
 
-        # Session class at line 23 {=scoped_session(sessionmaker(bind=engine))}
-        # db = Session()
         if User.query.filter_by(username=name).first() == None:
             db.session.add(usr)
             db.session.commit()
@@ -69,16 +65,11 @@ def register():
         else:
             flash("Username already exists.", "error")
 
-        # from flask_session
-        # session["user"] = username
-
     return render_template("register.html", form=form)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
     form = LoginForm()
-    # if "user" in session:
-    #     return redirect(url_for("dashboard"))
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
 
@@ -91,16 +82,11 @@ def login():
                 login_user(user)
                 return redirect(url_for('dashboard'))
         flash("Incorrect username or password", "error")
-
-        # from flask_session  
-        # session["user"] = request.form.get("name")
-        # return redirect(url_for("dashboard"))
         
     return render_template("login.html", form=form)
 
 @app.route("/logout")
 def logout():
-    # session.clear()
     logout_user()
     return redirect(url_for("login"))
 
@@ -116,7 +102,6 @@ def search():
         return redirect(url_for("dashboard"))
 
     query.strip().replace("'", "")
-    # result = Book.query.filter_by(title=query).all()
     statement = text("""select * from books where lower(title) like '%""" + query + """%' or lower(isbn) like '%""" + query + """%' or lower(author) like '%""" + query + """%'""")
     result = db.session.execute(statement).fetchall()
     isEmpty = False
@@ -124,14 +109,38 @@ def search():
         isEmpty = True
     return render_template("search_result.html", query=query, result=result, isEmpty=isEmpty)
 
-@app.route("/books/<string:isbn>")
+@app.route("/books/<string:isbn>", methods=['GET', 'POST'])
 def book(isbn):
     isbn = str(isbn)
-    statement = text("""select * from books where books.isbn = :isbn limit 1""")
-    result = db.session.execute(statement, {'isbn': isbn}).fetchone()
 
-    return render_template("book.html", result=result)
+    statement = text("""select * from books where books.isbn = :isbn limit 1""")
+    bookDetail = db.session.execute(statement, {'isbn': isbn}).fetchone()
     
+    userId = int(current_user.get_id())
+    bookId = bookDetail.id
+
+    # check if user has written review on current book
+    userCanReview = True
+    statement = text("""select * from reviews where book_id=:bookId AND user_id=:userId""")
+    userReview = db.session.execute(statement, {'bookId': bookId, 'userId': userId}).fetchone()
+    if (userReview != None):
+        userCanReview = False
+
+    if request.method == 'POST':
+        params = {}
+        feedback = request.form.get('feedback')
+        rating = int(request.form.get('rating'))
+        if feedback and rating:
+            params = {'feedback': feedback, 'rating': rating, 'bookId': bookId, 'userId': userId}
+            statement = text("""insert into reviews(review, rating, book_id, user_id) values(:feedback, :rating, :bookId, :userId)""")
+            db.session.execute(statement, params)
+            db.session.commit()
+            return redirect(url_for('book', isbn=isbn))
+    
+    statement = text("""select reviews.review, reviews.rating, reviews.book_id, users.username from reviews, users where book_id=:bookId AND user_id!=:userId AND user_id=users.id""")
+    bookReviews = db.session.execute(statement, {'bookId': bookId, 'userId': userId}).fetchall()
+
+    return render_template("book.html", bookDetail=bookDetail, bookReviews=bookReviews, userCanReview=userCanReview, userReview=userReview)
 
 
 if __name__ == "__main__":

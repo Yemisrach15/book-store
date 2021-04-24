@@ -2,10 +2,6 @@
 
 {% block title %} Login {% endblock %}
 
-{% block customCSS %} 
-<link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}">
-{% endblock %}
-
 {% block body %} 
 
 <div class="container">
@@ -36,17 +32,5 @@
 		</form>
 	</div>
 </div>
-
-<!-- {% for field in form if field.name != "csrf_token" %}
-        {{ field.label() }} {{ field }} <br>
-        {% for error in field.errors %}
-            {{ error }}
-        {% endfor %}
-    {% endfor %}-->
-	<!-- {{form.name(class="form-control")}}  -->
-	
-	<!-- Name: <input type="text" name="name"><br>
-	Password: <input type="password" name="pwd"><br>
-	<button type="submit">Submit</button> -->
 
 {% endblock %}
