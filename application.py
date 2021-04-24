@@ -1,4 +1,6 @@
 import os
+import requests
+import json
 
 from flask import Flask, session, render_template, redirect, request, url_for, flash
 from flask_session import Session
@@ -150,6 +152,22 @@ def book(isbn):
             db.session.commit()
             return redirect(url_for('book', isbn=isbn))
 
+@app.route("/api/<string:isbn>")
+def api(isbn):
+    isbn = str(isbn)
+
+    statement = text("""select * from books where books.isbn = :isbn limit 1""")
+    bookDetail = db.session.execute(statement, {'isbn': isbn}).fetchone()
+
+    values = {
+        "title": bookDetail.title,
+        "author": bookDetail.author,
+        "year": bookDetail.year,
+        "isbn": bookDetail.isbn
+    }
+
+    return json.dumps(values)
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
