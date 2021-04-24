@@ -20,10 +20,18 @@ On a terminal
 
     `set DATABASE_URL=[your database url]`
     
-5. Set flask app
+5. Create users, books and reviews table
+
+    `python create.py`
+
+6. Populate database with books
+
+    `python import.py`
+
+7. Set flask app
 
     `set FLASK_APP=application.py`
     
-6. Finally run the flask app
+8. Finally run the flask app
 
     `flask run`
