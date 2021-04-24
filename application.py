@@ -159,15 +159,22 @@ def api(isbn):
     statement = text("""select * from books where books.isbn = :isbn limit 1""")
     bookDetail = db.session.execute(statement, {'isbn': isbn}).fetchone()
 
-    values = {
-        "title": bookDetail.title,
-        "author": bookDetail.author,
-        "year": bookDetail.year,
-        "isbn": bookDetail.isbn
-    }
+    if bookDetail:
+        values = {
+            "title": bookDetail.title,
+            "author": bookDetail.author,
+            "year": bookDetail.year,
+            "isbn": bookDetail.isbn
+        }
 
-    return json.dumps(values)
+        return json.dumps(values)
     
+    values = {
+        "error": 404,
+        "message": "The requested ISBN was not found in database"
+    }
+    return json.dumps(values)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
