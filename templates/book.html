@@ -28,7 +28,7 @@
 
     <div class="book-details reviews">
         <h2>Reviews</h2>
-        {% if userCanReview %}
+        {% if userCanReview and current_user.is_authenticated%}
         <div class="post-review">
             <form class="" action="{{ url_for('book', isbn=bookDetail.isbn) }}" method="POST">
                 <label class="text-muted" for="feedback">Your Review</label>
@@ -45,15 +45,21 @@
             </form>
         </div>
         {% else %}
-        <div class="your-review">
-            <h3>You</h3>
-            <p><span class="text-muted">Review</span> {{userReview.review}}</p>
-            <p><span class="text-muted">Rating</span> 
-                {% for i in range(0, userReview.rating) %}
-                <span class="star-icon"><i class="fa fa-star" aria-hidden="true"></i></span>
-                {% endfor %}
-            </p>
-        </div>
+            {% if current_user.is_authenticated %}
+                <div class="your-review">
+                    <h3>You</h3>
+                    <p><span class="text-muted">Review</span> {{userReview.review}}</p>
+                    <p><span class="text-muted">Rating</span> 
+                        {% for i in range(0, userReview.rating) %}
+                        <span class="star-icon"><i class="fa fa-star" aria-hidden="true"></i></span>
+                        {% endfor %}
+                    </p>
+                </div>
+            {% else %}
+                <div class="no-user">
+                    <p><a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Signup</a> to give review</a>
+                </div>
+            {% endif %}
         {% endif %}
 
         <div>

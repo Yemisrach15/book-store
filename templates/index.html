@@ -1,12 +1,29 @@
 {% extends "base.html" %}
 
-{% block title %} Home {% endblock %}
+{% block title %} Bookstore | Home {% endblock %}
+
+{% block customCSS%}
+<script src="https://kit.fontawesome.com/54dfe9d33c.js" crossorigin="anonymous"></script>
+{% endblock %}
 
 {% block body %} 
 
-<h1>Home</h1>
-
-<a href="/login">Login</a> <br>
-<a href="/register">Register</a>
+<div class="container main">
+    <div class="hero">
+        <div class="book-icon">
+            <i class="fa fa-book-open"></i>
+        </div>
+        <div class="desc">
+            <p>Search by <span class="colored">ISBN</span>, <span class="colored">Author</span> or <span class="colored">Title</span></p>
+        </div>
+    </div>
+    
+    <div class="container search index">
+        <form class="search" action="/search" method="GET">
+            <input value="{{ query }}" type="search" name="q" class="form-control mr-2" autofocus>
+            <button type="submit" class="btn btn-primary btn-custom search-btn mb-2">Search</button>
+        </form>
+    </div>
+</div>
 
 {% endblock %}

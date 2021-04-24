@@ -116,15 +116,28 @@ def book(isbn):
     statement = text("""select * from books where books.isbn = :isbn limit 1""")
     bookDetail = db.session.execute(statement, {'isbn': isbn}).fetchone()
     
-    userId = int(current_user.get_id())
     bookId = bookDetail.id
 
-    # check if user has written review on current book
-    userCanReview = True
-    statement = text("""select * from reviews where book_id=:bookId AND user_id=:userId""")
-    userReview = db.session.execute(statement, {'bookId': bookId, 'userId': userId}).fetchone()
-    if (userReview != None):
-        userCanReview = False
+    if current_user.is_authenticated:
+        userId = int(current_user.get_id())
+
+        # check if user has written review on current book
+        userCanReview = True
+        statement = text("""select * from reviews where book_id=:bookId AND user_id=:userId""")
+        userReview = db.session.execute(statement, {'bookId': bookId, 'userId': userId}).fetchone()
+        if (userReview != None):
+            userCanReview = False
+
+        statement = text("""select reviews.review, reviews.rating, reviews.book_id, users.username from reviews, users where book_id=:bookId AND user_id!=:userId AND user_id=users.id""")
+        bookReviews = db.session.execute(statement, {'bookId': bookId, 'userId': userId}).fetchall()
+
+        return render_template("book.html", bookDetail=bookDetail, bookReviews=bookReviews, userCanReview=userCanReview, userReview=userReview)
+        
+    else:
+        statement = text("""select reviews.review, reviews.rating, reviews.book_id, users.username from reviews, users where book_id=:bookId AND user_id=users.id""")
+        bookReviews = db.session.execute(statement, {'bookId': bookId}).fetchall()
+        return render_template("book.html", bookDetail=bookDetail, bookReviews=bookReviews)
+    
 
     if request.method == 'POST':
         params = {}
@@ -136,11 +149,6 @@ def book(isbn):
             db.session.execute(statement, params)
             db.session.commit()
             return redirect(url_for('book', isbn=isbn))
-    
-    statement = text("""select reviews.review, reviews.rating, reviews.book_id, users.username from reviews, users where book_id=:bookId AND user_id!=:userId AND user_id=users.id""")
-    bookReviews = db.session.execute(statement, {'bookId': bookId, 'userId': userId}).fetchall()
-
-    return render_template("book.html", bookDetail=bookDetail, bookReviews=bookReviews, userCanReview=userCanReview, userReview=userReview)
 
 
 if __name__ == "__main__":
