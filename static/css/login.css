@@ -14,6 +14,9 @@ body {
 nav {
     box-shadow: 0 2px 15px #8a939c42;
 }
+.container{
+    padding-bottom: 2em;
+}
 .wrapper{
     width: 45%;
     margin: 5em auto;
@@ -72,6 +75,13 @@ nav {
     font-size: .9em;
     color: rgb(202, 211, 21);
     margin-bottom: 1em;
+}
+.description * {
+    font-family: 'Quicksand', serif;
+}
+.description .colored{
+    color: rgb(202, 211, 21);
+    font-weight: 500;
 }
 .card-subtitle{
     font-size: .9em;

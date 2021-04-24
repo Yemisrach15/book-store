@@ -104,7 +104,7 @@ def search():
         return redirect(url_for("dashboard"))
 
     query.strip().replace("'", "")
-    statement = text("""select * from books where lower(title) like '%""" + query + """%' or lower(isbn) like '%""" + query + """%' or lower(author) like '%""" + query + """%'""")
+    statement = text("""select * from books where lower(title) like lower('%""" + query + """%') or lower(isbn) like lower('%""" + query + """%') or lower(author) like lower('%""" + query + """%')""")
     result = db.session.execute(statement).fetchall()
     isEmpty = False
     if len(result) == 0:
@@ -160,11 +160,15 @@ def api(isbn):
     bookDetail = db.session.execute(statement, {'isbn': isbn}).fetchone()
 
     if bookDetail:
+        statement = text("""select count(*) as review_count, sum(rating)/count(*) as average_score from reviews where book_id=:bookId""")
+        reviewDetail = db.session.execute(statement, {'bookId': bookDetail.id}).fetchone()
         values = {
             "title": bookDetail.title,
             "author": bookDetail.author,
             "year": bookDetail.year,
-            "isbn": bookDetail.isbn
+            "isbn": bookDetail.isbn,
+            "review_count": reviewDetail.review_count,
+            "average_score": reviewDetail.average_score
         }
 
         return json.dumps(values)

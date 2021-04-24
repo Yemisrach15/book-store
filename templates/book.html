@@ -76,7 +76,7 @@
                 </div>
                 {% endfor %}
             {% else %}
-                {% if userCanReview == true %}
+                {% if userCanReview == true or current_user.is_authenticated == false %}
                 <div class="review w-100">
                     <h3 class="no-review">No reviews yet. Be the first one to give a comment.</h3>
                 </div>
