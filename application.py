@@ -120,6 +120,20 @@ def book(isbn):
     
     bookId = bookDetail.id
 
+    
+    if request.method == 'POST':
+        userId = int(current_user.get_id())
+        params = {}
+        feedback = request.form.get('feedback')
+        rating = int(request.form.get('rating'))
+        if feedback and rating:
+            params = {'feedback': feedback, 'rating': rating, 'bookId': bookId, 'userId': userId}
+            statement = text("""insert into reviews(review, rating, book_id, user_id) values(:feedback, :rating, :bookId, :userId)""")
+            db.session.execute(statement, params)
+            db.session.commit()
+            return redirect(url_for('book', isbn=isbn))
+
+
     if current_user.is_authenticated:
         userId = int(current_user.get_id())
 
@@ -140,17 +154,6 @@ def book(isbn):
         bookReviews = db.session.execute(statement, {'bookId': bookId}).fetchall()
         return render_template("book.html", bookDetail=bookDetail, bookReviews=bookReviews)
     
-
-    if request.method == 'POST':
-        params = {}
-        feedback = request.form.get('feedback')
-        rating = int(request.form.get('rating'))
-        if feedback and rating:
-            params = {'feedback': feedback, 'rating': rating, 'bookId': bookId, 'userId': userId}
-            statement = text("""insert into reviews(review, rating, book_id, user_id) values(:feedback, :rating, :bookId, :userId)""")
-            db.session.execute(statement, params)
-            db.session.commit()
-            return redirect(url_for('book', isbn=isbn))
 
 @app.route("/api/<string:isbn>")
 def api(isbn):
